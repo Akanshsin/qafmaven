@@ -1,0 +1,58 @@
+---
+version: 0.1
+globalTimeout: 150
+testSuiteTimeout: 150
+testSuiteStep: 150
+
+runson: win
+
+autosplit: true
+retryOnFailure: true
+
+maxRetries: 1
+concurrency: 2
+
+env:
+  # PAT: ${{ .secrets.testKey }}
+  CACHE_DIR: m2_cache_dir
+
+cacheKey: '{{ checksum "pom.xml" }}'
+cacheDirectories:
+  - .m2
+
+pre:
+  # Skip execution of the tests in the pre step
+  - mvn -Dmaven.repo.local=./.m2 dependency:resolve
+  - mvn test -Dframework=testng -DdiscoveryType=class -Dmode=discover -DfailIfNoTests=false > rawlogs.txt
+
+# post:
+#   - ls target/surefire-reports/
+
+# mergeArtifacts: true
+
+
+uploadArtefacts:
+ - name: Results
+   path:
+    - test-results/**
+
+
+
+runtime: 
+  language: java
+  version: 11
+
+testDiscovery:
+  type: raw
+  mode: dynamic
+  command: node discovery.js
+
+
+testRunnerCommand: mvn test `-Dframework=testng `-DdiscoveryType=class `-Dmaven.repo.local=./.m2 `-ntp -Dmode=execute `-DngTests=$test
+
+
+jobLabel: [qaf,wf]
+
+
+
+

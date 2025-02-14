@@ -1,0 +1,10 @@
+{
+  "discoveredItems": [
+    "com.qmetry.qaf.example.test.SampleTest",
+    "com.qmetry.qaf.automation.step.client.Scenario"
+  ],
+  "discoveryResultMap": {
+    "com.qmetry.qaf.example.test.SampleTest": ["testGoogleSearch"],
+    "com.qmetry.qaf.automation.step.client.Scenario": ["Sample Test"]
+  }
+}

@@ -1,0 +1,54 @@
+---
+version: 0.2
+globalTimeout: 150
+testSuiteTimeout: 150
+testSuiteStep: 150
+
+runson: win
+
+autosplit: true
+retryOnFailure: true
+
+maxRetries: 1
+concurrency: 2
+
+env:
+  # PAT: ${{ .secrets.testKey }}
+  CACHE_DIR: m2_cache_dir
+
+cacheKey: '{{ checksum "pom.xml" }}'
+cacheDirectories:
+  - .m2
+
+pre:
+  # Skip execution of the tests in the pre step
+  - mvn -Dmaven.repo.local=./.m2 dependency:resolve
+
+# post:
+#   - ls target/surefire-reports/
+
+# mergeArtifacts: true
+
+
+uploadArtefacts:
+ - name: Results
+   path:
+    - test-results/**
+
+
+
+runtime: 
+  language: java
+  version: 11
+
+framework:
+  name: maven/testng
+  discoveryType: class
+  defaultReports: false
+  runnerFlags: ["`-Dmaven.repo.local=./.m2","`-ntp"]
+
+jobLabel: [qaf,wf]
+
+
+parallelism: 1
+

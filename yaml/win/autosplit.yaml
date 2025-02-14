@@ -1,0 +1,52 @@
+---
+version: 0.1
+
+runson: linux
+
+autosplit: true
+
+retryOnFailure: true
+maxRetries: 1
+
+concurrency: 2
+
+env:
+  # PAT: ${{ .secrets.testKey }}
+  # CACHE_DIR: m2_cache_dir
+
+cacheKey: '{{ checksum "pom.xml" }}'
+cacheDirectories:
+  - .m2
+
+pre:
+  # Skip execution of the tests in the pre step
+  - mvn -Dmaven.repo.local=./.m2 dependency:resolve
+
+# post:
+#   - ls target/surefire-reports/
+
+# mergeArtifacts: true
+
+
+uploadArtefacts:
+ - name: Results
+   path:
+    - test-results/**
+
+
+runtime: 
+  language: java
+  version: 11
+
+testDiscovery:
+  type: raw
+  mode: dynamic
+  command: grep 'class name' config/testrun_config.xml | awk '{print$2}' | sed 's/name=//g' | sed 's/\x3e//g'
+
+testRunnerCommand: mvn test `-Dframework=testng `-ntp -Dmode=execute `-DngTests=$test `-Dremote_server=${LT_USERNAME}:${LT_ACCESS_KEY}@hub.lambdatest.com
+
+jobLabel: [qaf,wf]
+
+
+
+
