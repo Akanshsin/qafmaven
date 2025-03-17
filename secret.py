@@ -1,9 +1,7 @@
 # Define the string to check
 import sys
-input_string = sys.argv[1]
 
-# Check if the string is equal to "xyz"
-if input_string == "YXV0b21hdGlvbnVzZXIxOjBZMUFHSU5Ud0ZCQWZVZUJCa1dlWGltd08zQUNMT29VNkN1YXg0c0pGY3Z6TlExUE9P":
-    print("Secret working")
+if len(sys.argv) > 2 and sys.argv[1] == sys.argv[2]:
+    print("Both the keys are same ", sys.argv[2])
 else:
-    print("Error: Secrets not working'")
+    print("Both the keys are different")
